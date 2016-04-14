@@ -1,0 +1,3 @@
+[submodule "roles/lxc-dev"]
+	path = roles/lxc-dev
+	url = git@github.com:toopy/ansible-role-lxc-dev.git

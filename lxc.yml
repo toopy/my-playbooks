@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - command: lxc-config -l
+      register: already_installed
+      ignore_errors: True
+
+- hosts: localhost
+  become: yes
+  roles:
+    - role: lxc-dev

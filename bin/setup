@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# update submodules
+git submodule update --init --recursive
+# install system requirements
+sudo apt-get install libssl-dev libffi-dev python-dev python-pip python-virtualenv
+# enable virtualenv
+virtualenv .env --system-site-packages || true
+. .env/bin/activate
+# ensure latest ansible
+pip install -U ansible markupsafe
+# install ansible requirements
+ansible-galaxy install -r requirements.yml

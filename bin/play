@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+. .env/bin/activate
+ansible-playbook -vvvv $1.yml

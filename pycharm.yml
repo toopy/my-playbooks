@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  become: yes
+  roles:
+    - role: tersmitten.pycharm
+  tasks:
+    - file:
+        src: '/opt/pycharm-{{ pycharm_edition }}-{{ pycharm_version }}/bin/pycharm.sh'
+        dest: /usr/local/bin/pycharm
+        state: link
+  vars:
+    pycharm_version: 2016.1.2
+    pycharm_edition: community

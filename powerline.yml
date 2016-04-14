@@ -1,0 +1,50 @@
+---
+- hosts: localhost
+  tasks:
+    - blockinfile:
+        dest: ~/.ssh/config
+        create: yes
+        content: |
+          Host github.com
+            Identityfile ~/.ssh/id_rsa
+
+    - git:
+        repo: 'git@github.com:{{ item.user }}/{{ item.repo }}.git'
+        dest: '~/.local/{{ item.repo }}'
+      with_items:
+        - {user: 'powerline', repo: 'fonts'}
+        - {user: 'powerline', repo: 'powerline'}
+        - {user: 'milkbikis', repo: 'powerline-shell'}
+
+    - command: ./install.sh
+      args:
+        chdir: ~/.local/fonts
+
+    - command: pip install --user -e .
+      args:
+        chdir: ~/.local/powerline
+
+    - blockinfile:
+        dest: ~/.bashrc
+        content: |
+          PATH=$PATH:~/.local/bin
+
+    - template:
+        src: 'templates/.local/powerline-shell/{{ item }}.j2'
+        dest: '~/.local/powerline-shell/{{ item }}'
+      with_items:
+        - config.py
+
+    - command: ./install.py
+      args:
+        chdir: ~/.local/powerline-shell
+
+    - blockinfile:
+        dest: ~/.bashrc
+        content: |
+          function _update_ps1() {
+            PS1="$(~/.local/powerline-shell/powerline-shell.py --colorize-hostname --mode compatible $? 2> /dev/null)\n\\\$ "
+          }
+          if [ "$TERM" != "linux" ]; then
+            PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+          fi
