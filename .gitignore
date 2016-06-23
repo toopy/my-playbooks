@@ -1,0 +1,6 @@
+*.retry
+
+roles/GROG.package
+roles/dochang.docker
+roles/lciolecki.virtualenvwrapper
+roles/tersmitten.pycharm

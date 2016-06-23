@@ -1,0 +1,43 @@
+---
+- hosts: localhost
+  become: yes
+  roles:
+    - role: GROG.package
+      package_list:
+        - name: acpi
+        - name: bc
+        - name: conky
+        - name: dmenu
+        - name: feh
+        - name: gksu
+        - name: i3
+        - name: jq
+        - name: pavucontrol
+        - name: pulseaudio
+        - name: scrot
+
+- hosts: localhost
+  tasks:
+    - file:
+        path: ~/.i3
+        state: absent
+
+    - git:
+        repo: 'git@github.com:giacomos/i3wm-config.git'
+        dest: '~/.i3'
+        accept_hostkey: true
+
+    - file:
+        src: '~/.i3/{{ item.src }}'
+        dest: '~/{{ item.dest }}'
+        state: link
+      with_items:
+        - {src: 'i3status.conf', dest: '.i3status.conf'}
+        - {src: '.xinitrc', dest: '.xinitrc'}
+        - {src: '.xinitrc', dest: '.xsession'}
+
+    - template:
+        src: 'templates/.i3/{{ item }}.j2'
+        dest: '~/.i3/{{ item }}'
+      with_items:
+        - config

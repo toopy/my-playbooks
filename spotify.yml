@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - apt_key:
+        keyserver: hkp://keyserver.ubuntu.com:80
+        id: BBEBDCB318AD50EC6865090613B00F1FD2C19886
+    - blockinfile:
+        dest: /etc/apt/sources.list.d/spotify.list
+        content: |
+          deb http://repository.spotify.com stable non-free
+        create: yes
+      register: spotify_source_list
+    - apt:
+        update_cache: yes
+      when: spotify_source_list.changed
+
+- hosts: localhost
+  become: yes
+  roles:
+    - role: GROG.package
+      package_list:
+        - name: spotify-client
