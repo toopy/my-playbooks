@@ -117,7 +117,15 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 # lock
-bindsym $mod+Shift+l systemctl suspend; exec i3lock -c 000000 -n
+bindsym $mod+Shift+l exec i3lock -c 000000 -n
+# volume
+bindsym $mod+F1 exec "pactl set-sink-mute 0 toggle"
+bindsym $mod+F2 exec "pactl set-sink-volume 0 -5%"
+bindsym $mod+F3 exec "pactl set-sink-volume 0 +5%"
+bindsym $mod+F4 exec "pactl set-source-mute 1 toggle"
+# brightness
+bindsym $mod+F5 exec "xbacklight -dec 10"
+bindsym $mod+F6 exec "xbacklight -inc 10"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
