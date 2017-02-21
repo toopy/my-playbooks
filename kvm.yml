@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  become: yes
+  vars:
+    user: '{{ lookup("env", "USER") }}'
+  tasks:
+    - name: Ensure KVM/LibVirt packages
+      apt:
+        name: '{{ item }}'
+        state: latest
+      with_items:
+        - libvirt-clients
+        - libvirt-daemon-system
+        - qemu-kvm
+        - virtinst
+    - name: Add current user to libvirt and kvm groups
+      user:
+        name: '{{ user }}'
+        groups: '{{ item }}'
+        append: yes
+      with_items:
+        - libvirt
+        - kvm
+    - name: Get CentOS iso
+      become_user: '{{ user }}'
+      get_url:
+        url: http://miroir.univ-paris13.fr/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1611.iso
+        dest: ./var/iso/centos-7-minimal.iso
+    - name: Start CentOS 7 VMs
+      virt:
+        command: list_vms
+      register: list_vms
+    - debug:
+        var: list_vms
+
+# TODO - add dnsmasq service and config
+
+# TODO - update default virsh net xml
